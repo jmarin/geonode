@@ -23,6 +23,14 @@
       <id>osgeo</id>
       <url>http://download.osgeo.org/webdav/geotools</url>
     </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Restlet Maven Repository</name>
+      <url>http://maven.restlet.org</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <dependencies>
