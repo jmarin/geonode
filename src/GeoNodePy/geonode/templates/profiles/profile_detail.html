@@ -4,7 +4,7 @@
 {% include "geonode/app_header.html" %}
 {{ block.super }}
 {% endblock %}
-{% load i18n avatar_tags %}
+{% load i18n avatar_tags relationship_tags %}
 {% block content %}
 <div class="threecol">
   <div style="float: right">{% avatar profile.user 70 %}</div>
@@ -19,6 +19,24 @@
   <ul>
     <li><a href="{% url profiles_edit_profile %}">{% trans "Edit profile information" %}</a></li>
   </ul>
+  <h3>{% trans "Manage Connections" %}</h3>
+  <ul>
+      <li><a href="{% url relationship_list user "following" %}">{% trans "Following" %}</a></li>
+      <li><a href="{% url relationship_list user "blocking" %}">{% trans "Blocking" %}</a></li>
+  </ul>
+
+  {% else %}
+  {% if_relationship profile.user user "following" %}
+    <a href="{{ profile.user|remove_relationship_url:"following"}}">Unfollow</a>
+  {% else %}
+    <a href="{{ profile.user|add_relationship_url:"following" }}">Follow</a>
+  {% endif_relationship %}
+   | 
+  {% if_relationship profile.user user "blocking" %}
+    <a href="{{ profile.user|remove_relationship_url:"blocking"}}">Unblock</a>
+  {% else %}
+    <a href="{{ profile.user|add_relationship_url:"blocking"}}">Block</a>
+  {% endif_relationship %}
   {% endif %}
 </div>
 {% endblock %}
