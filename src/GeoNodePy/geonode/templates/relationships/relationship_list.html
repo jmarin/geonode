@@ -1,0 +1,25 @@
+{% extends "page_layout.html" %}
+
+{% load i18n avatar_tags relationship_tags %}
+
+{% block main %}
+
+<div class="twocol">
+    <ul id="relationship_list">
+    {% for user in relationship_list %}
+    <li><div style="float: left">{% avatar user 70 %}</div>   <p>{{ user.username }} 
+    {% if status.name == "Following" %}
+    <a href="{{ user|remove_relationship_url:"following"}}">{% trans "Unfollow" %}</a></p>
+    {% endif %}
+
+    {% if status.name == "Blocking" %}
+    <a href="{{ user|remove_relationship_url:"blocking"}}">{% trans "Unblock" %}</a></p>
+    {% endif %}
+
+    </li>
+    {% empty %}
+    <li>You're not {{ status_slug }} anyone!</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
