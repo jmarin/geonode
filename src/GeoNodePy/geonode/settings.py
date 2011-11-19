@@ -120,6 +120,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "geonode.maps.context_processors.resource_urls",
+    "django.core.context_processors.request",
 )
 
 MIDDLEWARE_CLASSES = (
