@@ -49,6 +49,7 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.urls')),
     (r'^profiles/', include('profiles.urls')),
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+    (r'^relationships/', include('relationships.urls')),
     )
 
 urlpatterns += proxy_urlpatterns
