@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from django.contrib.auth.models import User
@@ -30,3 +32,4 @@ class PeopleGroupMember(models.Model):
         ("manager", "Manager"),
         ("member", "Member"),
     ])
+    joined = models.DateTimeField(default=datetime.datetime.now)
