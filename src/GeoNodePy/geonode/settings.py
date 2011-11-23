@@ -260,6 +260,7 @@ INSTALLED_APPS = (
     'geonode.core',
     'geonode.maps',
     'geonode.proxy',
+    'geonode.people',
     'geonode'
 )
 
