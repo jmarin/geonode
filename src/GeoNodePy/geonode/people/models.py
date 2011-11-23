@@ -14,6 +14,12 @@ class PeopleGroup(models.Model):
         ("public-invite", "Public (invite-only)"),
         ("private", "Private"),
     ])
+    
+    def member_queryset(self):
+        return self.peoplegroupmember_set.all()
+    
+    def user_is_member(self, user):
+        return user.id in self.member_queryset().values_list("user", flat=True)
 
 
 class PeopleGroupMember(models.Model):
