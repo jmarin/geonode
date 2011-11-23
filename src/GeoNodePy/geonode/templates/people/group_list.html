@@ -1,1 +1,12 @@
-hello world
+{% extends "people/base.html" %}
+{% load avatar_tags %}
+
+{% block content %}
+<div class="onecol">
+{% for group in object_list %}
+   <ul>
+     <li><a href="#">{{ group.title }}</a></li>
+   </ul>
+{% endfor %}
+</div>
+{% endblock %}
