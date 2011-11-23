@@ -87,7 +87,7 @@ Ext.onReady(function () {
     {% endif %}
 
     {% if status.name == "Blocking" %}
-    <a href="{{ user|remove_relationship_url:"blocking"}}" class="action">{% trans "Unblock" %}</a>
+    <a href="{{ user|remove_relationship_url:"blocking"}}" class="action" id="{{ user.id }}">{% trans "Unblock" %}</a>
     {% endif %}
 
     </p></li>
