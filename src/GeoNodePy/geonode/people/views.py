@@ -22,6 +22,7 @@ def people_group_detail(request, slug):
     ctx = {
         "object": group,
         "maps": [], # @@@
+        "members": group.member_queryset(),
     }
     ctx = RequestContext(request, ctx)
     return render_to_response("people/group_detail.html", ctx)
