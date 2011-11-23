@@ -5,18 +5,21 @@
 {% block main %}
 
 <div class="twocol">
-    <ul id="relationship_list">
-    {% for user in relationship_list %}
-    <li><div style="float: left">{% avatar user 70 %}</div>   <p>{{ user.username }} 
+    <ul id="relationship_list" style="list-style-type: none;">
+        {% for user in relationship_list %}
+    <div style="height: 90px;">
+    <div style="float: left">{% avatar user 70 %}</div>
+    <li style="margin-left: 75px;"><p>{{ user.username }} - 
     {% if status.name == "Following" %}
-    <a href="{{ user|remove_relationship_url:"following"}}">{% trans "Unfollow" %}</a></p>
+    <a href="{{ user|remove_relationship_url:"following"}}">{% trans "Unfollow" %}</a>
     {% endif %}
 
     {% if status.name == "Blocking" %}
-    <a href="{{ user|remove_relationship_url:"blocking"}}">{% trans "Unblock" %}</a></p>
+    <a href="{{ user|remove_relationship_url:"blocking"}}">{% trans "Unblock" %}</a>
     {% endif %}
 
-    </li>
+    </p></li>
+    </div>
     {% empty %}
     <li>You're not {{ status_slug }} anyone!</li>
     {% endfor %}
