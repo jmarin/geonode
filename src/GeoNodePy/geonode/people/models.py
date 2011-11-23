@@ -20,7 +20,7 @@ class PeopleGroupMember(models.Model):
     
     group = models.ForeignKey(PeopleGroup)
     user = models.ForeignKey(User)
-    role = models.CharField(choices=[
+    role = models.CharField(max_length=10, choices=[
         ("manager", "Manager"),
         ("member", "Member"),
     ])
