@@ -1,11 +1,13 @@
 from django.contrib import admin
 
+import geonode.people.models
+
 
 class PeopleGroupMemberInline(admin.TabularInline):
-    model = models.PeopleGroupMember
+    model = geonode.people.models.PeopleGroupMember
 
 
-admin.site.register(models.PeopleGroup,
+admin.site.register(geonode.people.models.PeopleGroup,
     inlines = [
         PeopleGroupMemberInline
     ]
