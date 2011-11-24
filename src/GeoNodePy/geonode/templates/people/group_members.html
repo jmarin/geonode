@@ -1,0 +1,19 @@
+{% extends "people/base.html" %}
+{% load avatar_tags %}
+
+{% block content %}
+<div class="onecol">
+    <h2>{{ object.title }}</h2>
+    <h4>About:</h4>
+    <p>
+        {{ object.description }}
+    </p>
+    <h4>Members</h4>
+    <ul>
+        {% for member in members %}
+            <li><a href="{{ member.profile.get_absolute_url }}">{% avatar member 50 %}</a></li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+</div>
+{% endblock %}
