@@ -26,17 +26,10 @@
   </ul>
 
   {% else %}
-  {% if_relationship profile.user user "following" %}
-    <a href="{{ profile.user|remove_relationship_url:"following"}}">Unfollow</a>
-  {% else %}
-    <a href="{{ profile.user|add_relationship_url:"following" }}">Follow</a>
-  {% endif_relationship %}
-   | 
-  {% if_relationship profile.user user "blocking" %}
-    <a href="{{ profile.user|remove_relationship_url:"blocking"}}">Unblock</a>
-  {% else %}
-    <a href="{{ profile.user|add_relationship_url:"blocking"}}">Block</a>
-  {% endif_relationship %}
+  <div id="following_toggle">
+  </div>
+  <div id="block_toggle">
+  </div>
   {% endif %}
 </div>
 {% endblock %}
@@ -223,6 +216,48 @@ Ext.onReady(function() {
         renderTo: 'assets',
         items: [assetView]
     });
+    
+    // User following/blocking handling logic.
+    var blocking_div = Ext.get("block_toggle"),
+        {% if_relationship profile.user user "blocking" %}
+            block_url = "{{ profile.user|remove_relationship_url:"blocking"}}",
+            block_text = "Unblock",
+        {% else %}
+            block_url = "{{ profile.user|add_relationship_url:"blocking"}}",
+            block_text = "Block",
+        {% endif_relationship %}
+        
+        following_div = Ext.get("following_toggle"),
+        {% if_relationship profile.user user "following" %}
+            follow_url = "{{ profile.user|remove_relationship_url:"following"}}",
+            follow_text = "Unfollow",
+        {% else %}
+            follow_url = "{{ profile.user|add_relationship_url:"following" }}",
+            follow_text= "Follow",
+        {% endif_relationship %}
+        blocking_link = {},
+        dh = Ext.DomHelper;
+    
+    blocking_link = {
+        tag: "a",
+        id: "blocking_link",
+        href: block_url,
+        html: block_text
+    }
+    
+    following_link = {
+        tag: "a",
+        id: "following_link",
+        href: follow_url,
+        html: follow_text
+    }
+    
+    console.log(blocking_link);
+    console.log(following_div);
+    console.log(following_link);
+    
+    dh.append(blocking_div, blocking_link);
+    dh.append(following_div, following_link);
     {% endif %}
 });
 </script>
