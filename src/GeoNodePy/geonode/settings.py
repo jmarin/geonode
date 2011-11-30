@@ -260,6 +260,7 @@ INSTALLED_APPS = (
     'profiles',
     'avatar',
     'agon_ratings',
+    'dialogos',
 
     'geonode.core',
     'geonode.maps',

@@ -1,3 +1,5 @@
+--extra-index-url=http://dist.pinaxproject.com/dev
+
 PIL
 OWSLib==0.4.0
 -r py-base-libs.txt
@@ -18,3 +20,4 @@ coverage==3.4
 mock
 django-staticfiles
 agon-ratings==0.2
+dialogos==0.1.dev4
