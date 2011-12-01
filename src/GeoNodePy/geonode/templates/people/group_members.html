@@ -24,6 +24,12 @@
 
 {% block sidebar %}
 <div class="twocol">
+
+    <ul id="subnav" class="selfclear">
+      <li><a href="{% url people_group_members object.id %}" class="current">{% trans "Members" %}</a></li>
+      <li><a href="{% url people_group_detail object.id %}">{% trans "Maps &amp; Data" %}</a></li>
+    </ul>
+
     <h2> {% trans "Members" %} </h2>
     <div id="assets"></div>
 </div>
@@ -49,13 +55,15 @@ Ext.onReady(function() {
        { header: gettext('Joined on'), dataIndex: 'joined', width: 30, xtype: 'datecolumn' }
     ]
 
-    {% if user == profile.user %}
+    {% comment %}
+      if user is a group manager
         columns.unshift(cb);
         columns.push({
             tpl: "<span class='data-edit'>&nbsp;</span><span class='data-delete'>&nbsp;</span>",
             width: 15
         });
-    {% endif %}
+      endif
+    {% endcomment %}
 
     var assetView = new Ext.grid.GridPanel({
         store: assets,
