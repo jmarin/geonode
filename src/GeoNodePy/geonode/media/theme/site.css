@@ -316,11 +316,14 @@ line-height:1.2em;
 background: #fff;
 color: #003c4c;
 margin-bottom: -2px;
-box-shadow:0 -1px 2px #467685;
--webkit-box-shadow:0 -1px 2px #467685;
--moz-box-shadow:0 -1px 2px #467685;
+box-shadow:0 -1px 1px #467685;
+-webkit-box-shadow:0 -1px 1px #467685;
+-moz-box-shadow:0 -1px 1px #467685;
 }
 
+#subnav li a:hover {
+  color: #003c4c;
+}
 
 /*-----------------------
 Columns
