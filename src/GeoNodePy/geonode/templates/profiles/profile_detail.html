@@ -31,6 +31,14 @@
   <div id="block_toggle">
   </div>
   {% endif %}
+  <h3>Following</h3>
+  {% for u in profile.user.relationships.following %}
+      {% avatar u 65 %}
+  {% endfor %}
+  <h3>Followers</h3>
+  {% for u in profile.user.relationships.followers %}
+      {% avatar u 65 %}
+  {% endfor %}
 </div>
 {% endblock %}
 {% block sidebar %}
