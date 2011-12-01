@@ -133,7 +133,9 @@ Ext.onReady(function() {
         return list;
     }
 
-    {% if user == profile.user %}
+    {% comment %}
+      if user is the manager
+    {% endcomment %}
     var tools = {
         layout: 'hbox',
         unstyled: true,
@@ -143,8 +145,8 @@ Ext.onReady(function() {
               iconCls: 'icon-delete',
               handler: function() {
                   Ext.Msg.confirm(
-                      gettext("Delete layers"),
-                      gettext("You're about to delete multiple layers and maps.  Is that really what you want to do?"),
+                      gettext("Remove users"),
+                      gettext("You're about to delete multiple users. Is that really what you want to do?"),
                       function(btn) {
                           if (btn == 'yes') {
                               var spec = serialize();
@@ -162,7 +164,7 @@ Ext.onReady(function() {
               }
             },
             { xtype: 'button',
-              text: gettext("Change permissions on selected"),
+              text: gettext("Change role to"),
               iconCls: 'icon-security',
               handler: function() {
                   var activeList = serialize();
