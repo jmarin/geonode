@@ -21,3 +21,4 @@ mock
 django-staticfiles
 agon-ratings==0.2
 dialogos==0.1.dev4
+django-taggit==0.9.3
