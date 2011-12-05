@@ -33,11 +33,11 @@
   {% endif %}
   <h3>Following</h3>
   {% for u in profile.user.relationships.following %}
-      {% avatar u 65 %}
+      <a href="{% url profiles_profile_detail u %}">{% avatar u 65 %}</a>
   {% endfor %}
   <h3>Followers</h3>
   {% for u in profile.user.relationships.followers %}
-      {% avatar u 65 %}
+      <a href="{% url profiles_profile_detail u %}">{% avatar u 65 %}</a>
   {% endfor %}
 </div>
 {% endblock %}
