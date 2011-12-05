@@ -4,7 +4,7 @@
 {% include "geonode/app_header.html" %}
 {{ block.super }}
 {% endblock %}
-{% load i18n avatar_tags %}
+{% load i18n avatar_tags relationship_tags %}
 {% block content %}
 <div class="threecol">
   <div style="float: right">{% avatar profile.user 70 %}</div>
@@ -19,7 +19,26 @@
   <ul>
     <li><a href="{% url profiles_edit_profile %}">{% trans "Edit profile information" %}</a></li>
   </ul>
+  <h3>{% trans "Manage Connections" %}</h3>
+  <ul>
+      <li><a href="{% url relationship_list user "following" %}">{% trans "Following" %}</a></li>
+      <li><a href="{% url relationship_list user "blocking" %}">{% trans "Blocking" %}</a></li>
+  </ul>
+
+  {% else %}
+  <div id="following_toggle">
+  </div>
+  <div id="block_toggle">
+  </div>
   {% endif %}
+  <h3>Following</h3>
+  {% for u in profile.user.relationships.following %}
+      {% avatar u 65 %}
+  {% endfor %}
+  <h3>Followers</h3>
+  {% for u in profile.user.relationships.followers %}
+      {% avatar u 65 %}
+  {% endfor %}
 </div>
 {% endblock %}
 {% block sidebar %}
@@ -204,6 +223,92 @@ Ext.onReady(function() {
         border: false,
         renderTo: 'assets',
         items: [assetView]
+    });
+    
+    // User following/blocking handling logic.
+    var blocking_div = Ext.get("block_toggle"),
+
+        block_remove_url = "{{ profile.user|remove_relationship_url:"blocking"}}",
+        block_remove_text = "Unblock",
+        block_add_url = "{{ profile.user|add_relationship_url:"blocking"}}",
+        block_add_text = "Block",
+        {% if_relationship profile.user user "blocking" %}
+            block_url = block_remove_url,
+            block_text = block_remove_text,
+        {% else %}
+            block_url = block_add_url,
+            block_text = block_add_text,
+        {% endif_relationship %}
+        
+        following_div = Ext.get("following_toggle"),
+        follow_add_url = "{{ profile.user|add_relationship_url:"following" }}",
+        follow_add_text= "Follow",
+        follow_remove_url = "{{ profile.user|remove_relationship_url:"following"}}",
+        follow_remove_text = "Unfollow",
+
+        {% if_relationship user profile.user "following" %}
+            follow_url = follow_remove_url,
+            follow_text = follow_remove_text,
+        {% else %}
+            follow_url = follow_add_url,
+            follow_text= follow_add_text,
+        {% endif_relationship %}
+        blocking_link = {},
+        dh = Ext.DomHelper;
+    
+    blocking_link = {
+        tag: "a",
+        id: "blocking_link",
+        href: block_url,
+        html: block_text
+    }
+    
+    following_link = {
+        tag: "a",
+        id: "following_link",
+        href: follow_url,
+        html: follow_text
+    }
+
+    function toggleFollowLink(linkTag) {
+        follow_url = follow_url === follow_add_url ? follow_remove_url : follow_add_url;
+        follow_text = follow_text === follow_add_text ? follow_remove_text : follow_add_text;
+
+        linkTag.href = follow_url;
+        linkTag.update(follow_text);
+    }
+
+    function toggleBlockLink(linkTag) {
+        block_url = block_url === block_add_url ? block_remove_url : block_add_url;
+        block_text = block_text === block_add_text ? block_remove_text : block_add_text;
+
+        linkTag.href = block_url;
+        linkTag.update(block_text);
+    }
+
+    // Add the appropriate links to the page.
+    dh.append(blocking_div, blocking_link);
+    dh.append(following_div, following_link);
+
+    // Act on the following link.
+    Ext.get("following_link").on("click", function (evt, el, o) {
+        evt.preventDefault();
+        Ext.Ajax.request({
+            method: "POST",
+            url: follow_url,
+            defaultHeaders: {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        });
+        toggleFollowLink(Ext.get(this));
+    });
+
+    Ext.get("blocking_link").on("click", function (evt, el, o) {
+        evt.preventDefault();
+        Ext.Ajax.request({
+            method: "POST",
+            url: block_url,
+            defaultHeaders: {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        });
+        toggleBlockLink(Ext.get(this));
     });
     {% endif %}
 });

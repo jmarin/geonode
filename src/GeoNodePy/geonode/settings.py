@@ -262,6 +262,7 @@ INSTALLED_APPS = (
     'agon_ratings',
     'dialogos',
     'taggit',
+    'relationships',
 
     'geonode.core',
     'geonode.maps',
