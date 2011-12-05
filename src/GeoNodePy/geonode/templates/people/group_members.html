@@ -19,6 +19,13 @@
             <li><a href="{{ member.profile.get_absolute_url }}">{% avatar member 50 %}</a></li>
         {% endfor %}
     </ul>
+    {% if invite_form %}
+        <form method="POST" action="{% url people_group_invite object.slug %}">
+            {% csrf_token %}
+            {{ invite_form }}
+            <input type="submit" value="invite" />
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -133,9 +140,7 @@ Ext.onReady(function() {
         return list;
     }
 
-    {% comment %}
-      if user is the manager
-    {% endcomment %}
+    {% if is_manager %}
     var tools = {
         layout: 'hbox',
         unstyled: true,

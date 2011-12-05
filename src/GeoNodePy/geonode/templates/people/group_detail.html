@@ -4,6 +4,17 @@
 {% block content %}
 <div class="onecol">
     <h2>{{ object.title }}</h2>
+    {% if object.access == "public" and not is_member %}
+        {% if user.is_authenticated %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="submit" value="Join" />
+            </form>
+        {% else %}
+            {# @@@ what is the correct behavior here? #}
+            <p>Log in to join this group</p>
+        {% endif %}
+    {% endif %}
     <h4>Members</h4>
     <ul>
         {% for member in members %}
