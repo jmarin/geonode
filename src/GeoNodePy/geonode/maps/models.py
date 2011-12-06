@@ -740,6 +740,9 @@ class LayerManager(models.Manager):
                 "abstract": resource.abstract or 'No abstract provided',
                 "uuid": str(uuid.uuid4())
             })
+            if resource.keywords: 
+                layer.keywords.set(*resource.keywords)
+                layer.save()
 
             ## Due to a bug in GeoNode versions prior to 1.0RC2, the data
             ## in the database may not have a valid date_type set.  The
