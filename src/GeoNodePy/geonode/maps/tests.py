@@ -462,7 +462,7 @@ community."
         # FIXME Test a comprehensive set of permisssions specifications 
 
         # Set the Permissions
-        geonode.maps.views.set_layer_permissions(layer, self.perm_spec)
+        geonode.maps.views.set_object_permissions(layer, self.perm_spec)
 
         # Test that the Permissions for ANONYMOUS_USERS and AUTHENTICATED_USERS were set correctly        
         self.assertEqual(layer.get_gen_level(geonode.core.models.ANONYMOUS_USERS), layer.LEVEL_NONE) 
@@ -589,7 +589,7 @@ community."
         # belong to group2 which is mentioned as read_only, so robert should have
         # read_only access
         layer = Layer.objects.all()[0]
-        geonode.maps.views.set_layer_permissions(layer, self.perm_spec) 
+        geonode.maps.views.set_object_permissions(layer, self.perm_spec) 
         logged_in = c.login(username='robert', password='bob')
         response = c.get("/data/acls")
         response_json = json.loads(response.content)
@@ -648,7 +648,19 @@ community."
         pass
 
     def test_batch_permissions(self):
-        pass
+        specs = {u'layers': [], u'maps': [u'1'], u'permissions': {u'users': [[u'group1', u'layer_readwrite']]}}
+        
+        c = Client()
+        logged_in = c.login(username='admin', password='admin')
+        response = c.post("/data/api/batch_permissions", 
+                            data=json.dumps(specs),
+                            content_type="application/json")
+
+        self.assertEquals(response.status_code, 200)
+        
+        map = Map.objects.get(pk=1)
+        group = Group.objects.get(name='group1')
+        self.assertEqual(map.get_group_level(group), u'map_readwrite')
 
     # Data Tests
 
