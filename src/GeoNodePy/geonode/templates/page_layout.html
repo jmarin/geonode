@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load announcements_tags %}
+{% load announcement_tags %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -68,7 +68,7 @@
 
     </div><!-- /.wrap -->
   </div><!-- /#crossbar -->
-  {% announcements as announcements_list %}
+  {% fetch_announcements as announcements_list %}
   {% if announcements_list %}
   <div id="announcements">
       {% for announcement in announcements_list %}
