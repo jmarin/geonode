@@ -71,14 +71,13 @@
   {% fetch_announcements as announcements_list %}
   {% if announcements_list %}
   <div id="announcements">
+      <ul>
       {% for announcement in announcements_list %}
       <div class="announcement">
-          <dl>
-            <dt>{{ announcement.title }}</dt>
-            <dd>{{ announcement.content }} - <a href="{% url announcement_hide announcement.id %}?next={{ request.get_full_path }}" class="dismiss">Clear</a></dd>
-          </dl>
+          <li><span class="announceTitle">{{ announcement.title }}</span>: <span class="announceContent">{{ announcement.content }}</span> - <a href="{% url announcement_hide announcement.id %}?next={{ request.get_full_path }}" class="dismiss">Clear</a></dd>
       </div>
       {% endfor %}
+      </ul>
   </div> <!-- /#announcements -->
   {% endif %}
   <div id="main">
