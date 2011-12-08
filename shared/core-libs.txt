@@ -19,3 +19,4 @@ coverage==3.4
 mock
 django-staticfiles
 django-announcements==0.1.2
+django-notification==0.2

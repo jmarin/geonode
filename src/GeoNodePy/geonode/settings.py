@@ -259,6 +259,7 @@ INSTALLED_APPS = (
     'profiles',
     'avatar',
     'announcements',
+    'notification',
     'geonode.core',
     'geonode.maps',
     'geonode.proxy',
