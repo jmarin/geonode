@@ -75,11 +75,8 @@
       <div class="announcement">
           <dl>
             <dt>{{ announcement.title }}</dt>
-            <dd>{{ announcement.content }}</dd>
+            <dd>{{ announcement.content }} - <a href="{% url announcement_hide announcement.id %}?next={{ request.get_full_path }}" class="dismiss">Clear</a></dd>
           </dl>
-          {% if announcement.dismiss_url %}
-            <a href="{{ announcement.dismiss_url }}" class="dismiss">Clear</a>
-          {% endif %}
       </div>
       {% endfor %}
   </div> <!-- /#announcements -->
