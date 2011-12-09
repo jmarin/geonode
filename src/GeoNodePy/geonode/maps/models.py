@@ -501,7 +501,11 @@ class Contact(models.Model):
     country = models.CharField(choices=COUNTRIES, max_length=3, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     
+<<<<<<< HEAD
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"))
+=======
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
+>>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
 
     def clean(self):
         # the specification says that either name or organization should be provided
@@ -928,14 +932,10 @@ class Layer(models.Model, PermissionLevelMixin):
 
     # section 3
 <<<<<<< HEAD
-<<<<<<< HEAD
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"))
 =======
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
 >>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
-=======
-    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), null=True, blank=True)
->>>>>>> f28a97f... Make keywords optional (null=True, blank=True)
     keywords_region = models.CharField(_('keywords region'), max_length=3, choices= COUNTRIES, default = 'USA')
     constraints_use = models.CharField(_('constraints use'), max_length=255, choices = [(x, x) for x in CONSTRAINT_OPTIONS], default='copyright')
     constraints_other = models.TextField(_('constraints other'), blank=True, null=True)
@@ -1473,14 +1473,10 @@ class Map(models.Model, PermissionLevelMixin):
     """
     
 <<<<<<< HEAD
-<<<<<<< HEAD
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"))
 =======
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
 >>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
-=======
-    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), null=True, blank=True)
->>>>>>> f28a97f... Make keywords optional (null=True, blank=True)
 
     def __unicode__(self):
         return '%s by %s' % (self.title, (self.owner.username if self.owner else "<Anonymous>"))
