@@ -656,6 +656,243 @@ class LayerManager(models.Manager):
                 print >> console, msg
         return output
 
+<<<<<<< HEAD
+=======
+    def gn_guzzle(self, ignore_errors=True, verbosity=1, console=sys.stdout):
+        """
+        Configure layers/resources harvested into GeoNetwork in GeoNode
+        """
+        if verbosity > 1:
+            print >> console, "Inspecting the configured Harvesting Services ..." 
+        # Only Harvested CSW for now ...
+        services = Service.objects.filter(method='H', type='CSW')
+        num_services = len(services)
+        if verbosity > 1:
+            msg =  "Found %d services, starting processing" % num_services 
+            print >> console, msg
+        output = []
+        if(_csw is None):
+            get_csw()
+        for i, service in enumerate(services):
+            uuids = self.geonetwork.get_uuids_for_source(service.uuid)
+            number = len(uuids)
+            for j, uuid in enumerate(uuids): 
+                name = uuid
+                try:
+                    _csw.getrecordbyid(id=[uuid])
+                    csw_layer = _csw.records.get(uuid) 
+                    name = csw_layer.title
+                    new_layer, status = self.save_layer_from_geonetwork(service, uuid, csw_layer)
+                except (KeyboardInterrupt, SystemExit): 
+                    raise
+                except Exception, e:
+                    if ignore_errors:
+                        status = 'failed'
+                        exception_type, error, traceback = sys.exc_info()
+                    else:
+                        if verbosity > 0:
+                            msg = "Stopping process because --strict=True and an error was found."
+                            print >> sys.stderr, msg
+                        raise Exception('Failed to process resource with UUID %s' % name, e), None, sys.exc_info()[2]
+
+                msg = "[%s] Layer %s (%d/%d %d/%d)" % (status, name, i, num_services, j, number)
+                info = {'name': name, 'status': status}
+                if status == 'failed':
+                    info['traceback'] = traceback
+                    info['exception_type'] = exception_type
+                    info['error'] = error
+                output.append(info)
+                if verbosity > 0:
+                    print >> console, msg
+        return output
+
+
+    def save_layer_from_geoserver(self, workspace, store, resource):
+        cat = self.gs_catalog
+        gn = self.gn_catalog
+        if store.resource_type == "wmsStore":
+            type = "WMS"
+            method = "C"
+            base_url = store.capabilitiesURL
+            name = store.name
+        elif store.type == "Web Feature Server":
+            type = "WFS"
+            method = "C"
+            base_url = store.connection_parameters['WFSDataStoreFactory:GET_CAPABILITIES_URL'] 
+            name = store.name
+        else:
+            type = "OWS"
+            method = "L"
+            base_url = settings.GEOSERVER_BASE_URL + "ows" 
+            name = settings.SITENAME
+        
+        service, created = Service.objects.get_or_create(type = type, method=method,
+                                                base_url = base_url,
+                                                name = name)
+        try:
+            layer, created = self.get_or_create(name=resource.name, defaults = {
+                "service": service,
+                "workspace": workspace.name,
+                "store": store.name,
+                "storeType": store.resource_type,
+                "typename": "%s:%s" % (workspace.name, resource.name),
+                "title": resource.title or 'No title provided',
+                "abstract": resource.abstract or 'No abstract provided',
+                "uuid": str(uuid.uuid4())
+            })
+            if resource.keywords: 
+                layer.keywords.set(*resource.keywords)
+                layer.save()
+
+            ## Due to a bug in GeoNode versions prior to 1.0RC2, the data
+            ## in the database may not have a valid date_type set.  The
+            ## invalid values are expected to differ from the acceptable
+            ## values only by case, so try to convert, then fallback to a
+            ## default.
+            ##
+            ## We should probably drop this adjustment in 1.1. --David Winslow
+            if layer.date_type not in Layer.VALID_DATE_TYPES:
+                candidate = lower(layer.date_type)
+                if candidate in Layer.VALID_DATE_TYPES:
+                    layer.date_type = candidate
+                else:
+                    layer.date_type = Layer.VALID_DATE_TYPES[0]
+
+            layer.save()
+
+            if created: 
+                layer.set_default_permissions()
+                status = 'created'
+            else:
+                status = 'updated'
+            return layer, status
+        finally:
+            pass
+
+    def save_layer_from_geonetwork(self, service, uuid, csw_record):
+        workspace = "geonode"# Is it safe to hardcode this? 
+        try:
+            layer, created = self.get_or_create(uuid=uuid, defaults = {
+                "service": service,
+                "workspace": workspace, 
+                "store": "geonetwork",
+                "storeType": "cswRecord",
+                "typename": "%s:%s" % (workspace, slugify(csw_record.title).replace('-','_')),
+                "title": csw_record.title or 'No title provided',
+                "abstract": csw_record.abstract or 'No abstract provided',
+                "owner": service.owner,
+            })
+            layer.owner = service.owner
+            layer.abstract = csw_record.abstract or 'No Abstract provided'
+            layer.name = csw_record.title
+            layer.supplemental_information = csw_record.source or "" # Temporary? 
+            layer.distribution_url = csw_record.uri
+            # TODO Check all items in from __dict__
+            layer.save()
+            
+            if created:
+                layer.set_default_permissions()
+                status = 'created'
+            else:
+                status = 'updated'
+            return layer, status
+        finally: 
+           pass
+            
+
+SERVICE_TYPES = (
+	('OWS', 'Paired WMS/WFS/WCS'),
+	('WMS', 'Web Map Service'),
+	('WFS', 'Web Feature Service'),
+	('WCS', 'Web Coverage Service'),
+	('WPS', 'Web Processing Service'),
+	('CSW', 'Catalogue Service'),
+	('WMTS', 'Web Map Tile Service'),
+	('TMS', 'Tile Map Service'),
+	('OSG', 'OpenSearch Geo Service'),
+)
+
+SERVICE_METHODS = (
+    ('L', 'Local'),
+    ('C', 'Cascaded'),
+    ('H', 'Harvested'),
+    ('I', 'Indexed'),
+    ('X', 'Live'),
+)
+
+class Service(models.Model, PermissionLevelMixin):
+    """
+    Service Class to represent remote Geo Web Services
+    """
+    
+    type = models.CharField(max_length=4, choices=SERVICE_TYPES)
+    method = models.CharField(max_length=1, choices=SERVICE_METHODS)
+    base_url = models.URLField(verify_exists=False, unique=True) # with service, version and request etc stripped off 
+    version = models.CharField(max_length=10, null=True, blank=True)
+    name = models.CharField(max_length=255, unique=True) #Should force to slug?
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    abstract = models.TextField(null=True, blank=True)
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
+    online_resource = models.URLField(verify_exists = False, null=True, blank=True)
+    fees = models.CharField(max_length=1000, null=True, blank=True)
+    access_contraints = models.CharField(max_length=255, null=True, blank=True)
+    connection_params = models.TextField(null=True, blank=True)
+    username = models.CharField(max_length=50, null=True, blank=True)
+    password = models.CharField(max_length=50, null=True, blank=True)
+    api_key = models.CharField(max_length=255, null=True, blank=True)
+    workspace_ref = models.URLField(verify_exists = False, null=True, blank=True)
+    store_ref = models.URLField(verify_exists = False, null=True, blank=True)
+    resources_ref = models.URLField(verify_exists = False, null = True, blank = True)
+    contacts = models.ManyToManyField(Contact, through='ServiceContactRole')
+    owner = models.ForeignKey(User, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    first_noanswer = models.DateTimeField(null=True, blank=True)
+    noanswer_retries = models.PositiveIntegerField(null=True, blank=True)
+    uuid = models.CharField(max_length=36, null=True, blank=True)
+    external_id = models.IntegerField(null=True, blank=True)
+	
+    # Supported Capabilities
+    
+    def __unicode__(self):
+        return self.name
+
+    def layers(self):
+        """Return a list of all the child layers (resources) for this Service"""
+        pass 
+
+    def get_absolute_url(self):
+        return '/services/%i' % self.id
+        
+    class Meta:
+        # custom permissions, 
+        # change and delete are standard in django
+        permissions = (('view_service', 'Can view'), 
+                       ('change_service_permissions', "Can change permissions"), )
+
+    # Permission Level Constants
+    # LEVEL_NONE inherited
+    LEVEL_READ  = 'service_readonly'
+    LEVEL_WRITE = 'service_readwrite'
+    LEVEL_ADMIN = 'service_admin'
+    
+    def set_default_permissions(self):
+        self.set_gen_level(ANONYMOUS_USERS, self.LEVEL_READ)
+        self.set_gen_level(AUTHENTICATED_USERS, self.LEVEL_READ)
+
+        # remove specific user permissions
+        current_perms =  self.get_all_level_info()
+        for username in current_perms['users'].keys():
+            user = User.objects.get(username=username)
+            self.set_user_level(user, self.LEVEL_NONE)
+
+        # assign owner admin privs
+        if self.owner:
+            self.set_user_level(self.owner, self.LEVEL_ADMIN)    
+
+>>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
+
 class Layer(models.Model, PermissionLevelMixin):
     """
     Layer Object loosely based on ISO 19115:2003
@@ -690,7 +927,15 @@ class Layer(models.Model, PermissionLevelMixin):
     # see poc property definition below
 
     # section 3
+<<<<<<< HEAD
+<<<<<<< HEAD
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"))
+=======
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
+>>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
+=======
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), null=True, blank=True)
+>>>>>>> f28a97f... Make keywords optional (null=True, blank=True)
     keywords_region = models.CharField(_('keywords region'), max_length=3, choices= COUNTRIES, default = 'USA')
     constraints_use = models.CharField(_('constraints use'), max_length=255, choices = [(x, x) for x in CONSTRAINT_OPTIONS], default='copyright')
     constraints_other = models.TextField(_('constraints other'), blank=True, null=True)
@@ -1226,8 +1471,16 @@ class Map(models.Model, PermissionLevelMixin):
     """
     The last time the map was modified.
     """
-
+    
+<<<<<<< HEAD
+<<<<<<< HEAD
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"))
+=======
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
+>>>>>>> b79a4e9... Remove null=True (only blank=True is required for TaggableManager)
+=======
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), null=True, blank=True)
+>>>>>>> f28a97f... Make keywords optional (null=True, blank=True)
 
     def __unicode__(self):
         return '%s by %s' % (self.title, (self.owner.username if self.owner else "<Anonymous>"))
