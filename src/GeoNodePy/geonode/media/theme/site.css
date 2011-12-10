@@ -808,7 +808,14 @@ cursor: pointer;
   font-size:14px;
 }
 
-/*** member list ***/
+/*** group detail ***/
+img.group-logo {
+  width:52px;
+  margin:10px 15px 15px 0;
+  float:left;
+}
+
 .member-list img {
   margin:0 2px 2px 0;
 }
+

@@ -7,9 +7,15 @@
 {% load i18n avatar_tags %}
 
 {% block content %}
-  <div class="threecol">
-      <h2>{{ object.title }}</h2>
-      {% if object.access == "public" and not is_member %}
+    <div class="threecol">
+        {% comment %}
+            do we reference all images as 'avatar' or is it for user profile images only?
+            {% avatar object.logo 50 %}
+            url below is wrong
+        {% endcomment %}
+        <img src="{{ object.logo }}" alt="{{ object.title }}" class="group-logo" />
+        <h2>{{ object.title }}</h2>
+        {% if object.access == "public" and not is_member %}
           {% if user.is_authenticated %}
               <form method="POST" action="">
                   {% csrf_token %}
@@ -19,15 +25,15 @@
               {# @@@ what is the correct behavior here? #}
               <p>Log in to join this group</p>
           {% endif %}
-      {% endif %}
+        {% endif %}
 
-      <p>
+        <p>
           <strong>About:</strong><br />
           {{ object.description }}
-      </p>
+        </p>
 
-      <h3>Permissions</h3>
-      <p>This group is <strong>{{ object.get_access_display }}</strong>.
+        <h3>Permissions</h3>
+        <p>This group is <strong>{{ object.get_access_display }}</strong>.
           {% if object.access == "public" %}
               Anyone may view data and maps and join this group.
           {% else %}
@@ -39,20 +45,20 @@
                   {% endif %}
               {% endif %}
           {% endif %}
-      </p>
+        </p>
 
-      <h3>Members <span>({{ members|length }})</span></h3>
-      <div class="member-list">
+        <h3>Members <span>({{ members|length }})</span></h3>
+        <div class="member-list">
           {% for member in members %}
               <a href="{{ member.profile.get_absolute_url }}">{% avatar member 35 %}</a>
           {% endfor %}
-      </div>
-  </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block sidebar %}
-  <div class="twocol">
-      <h2>{% trans "Maps & Data" %}</h2>
-      <div id="assets"></div>
-  </div>
+    <div class="twocol">
+        <h2>{% trans "Maps & Data" %}</h2>
+        <div id="assets"></div>
+    </div>
 {% endblock %}
