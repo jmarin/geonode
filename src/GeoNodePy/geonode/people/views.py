@@ -44,6 +44,7 @@ def people_group_members(request, slug):
     ctx.update({
         "object": group,
         "members": group.member_queryset(),
+        "is_member": group.user_is_member(request.user),
         "is_manager": group.user_is_role(request.user, "manager"),
     })
     ctx = RequestContext(request, ctx)
