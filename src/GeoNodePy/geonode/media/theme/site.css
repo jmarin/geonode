@@ -815,6 +815,10 @@ img.group-logo {
   float:left;
 }
 
+.member-list {
+  margin-bottom:15px;
+}
+
 .member-list img {
   margin:0 2px 2px 0;
 }
