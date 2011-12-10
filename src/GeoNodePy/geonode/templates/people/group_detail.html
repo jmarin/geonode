@@ -1,25 +1,58 @@
 {% extends "people/base.html" %}
-{% load avatar_tags %}
+{% block head %}
+{% include "geonode/ext_header.html" %}
+{% include "geonode/app_header.html" %}
+{{ block.super }}
+{% endblock %}
+{% load i18n avatar_tags %}
 
 {% block content %}
-<div class="onecol">
-    <h2>{{ object.title }}</h2>
-    {% if object.access == "public" and not is_member %}
-        {% if user.is_authenticated %}
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="submit" value="Join" />
-            </form>
-        {% else %}
-            {# @@@ what is the correct behavior here? #}
-            <p>Log in to join this group</p>
-        {% endif %}
-    {% endif %}
-    <h4>Members</h4>
-    <ul>
-        {% for member in members %}
-            <li><a href="{{ member.profile.get_absolute_url }}">{% avatar member 50 %}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+  <div class="threecol">
+      <h2>{{ object.title }}</h2>
+      {% if object.access == "public" and not is_member %}
+          {% if user.is_authenticated %}
+              <form method="POST" action="">
+                  {% csrf_token %}
+                  <input type="submit" value="Join" />
+              </form>
+          {% else %}
+              {# @@@ what is the correct behavior here? #}
+              <p>Log in to join this group</p>
+          {% endif %}
+      {% endif %}
+
+      <p>
+          <strong>About:</strong><br />
+          {{ object.description }}
+      </p>
+
+      <h3>Permissions</h3>
+      <p>This group is <strong>{{ object.get_access_display }}</strong>.
+          {% if object.access == "public" %}
+              Anyone may view data and maps and join this group.
+          {% else %}
+              {% if object.access == "public-invite" %}
+                  Anyone may view data and maps but membership is by invitation only.
+              {% else %}
+                  {% if object.access == "private" %}
+                      Only members may view data and maps, membership is by invitation only.
+                  {% endif %}
+              {% endif %}
+          {% endif %}
+      </p>
+
+      <h3>Members <span>({{ members|length }})</span></h3>
+      <div class="member-list">
+          {% for member in members %}
+              <a href="{{ member.profile.get_absolute_url }}">{% avatar member 35 %}</a>
+          {% endfor %}
+      </div>
+  </div>
+{% endblock %}
+
+{% block sidebar %}
+  <div class="twocol">
+      <h2>{% trans "Maps & Data" %}</h2>
+      <div id="assets"></div>
+  </div>
 {% endblock %}
