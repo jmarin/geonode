@@ -12,7 +12,7 @@ def people_group_list(request):
         "object_list": PeopleGroup.objects.all(),
     }
     ctx = RequestContext(request, ctx)
-    return render_to_response("people/group_list.html", ctx)
+    return render_to_response("groups/group_list.html", ctx)
 
 
 def people_group_detail(request, slug):
@@ -28,7 +28,7 @@ def people_group_detail(request, slug):
         "is_member": group.user_is_member(request.user),
     }
     ctx = RequestContext(request, ctx)
-    return render_to_response("people/group_detail.html", ctx)
+    return render_to_response("groups/group_detail.html", ctx)
 
 
 def people_group_members(request, slug):
@@ -48,7 +48,7 @@ def people_group_members(request, slug):
         "is_manager": group.user_is_role(request.user, "manager"),
     })
     ctx = RequestContext(request, ctx)
-    return render_to_response("people/group_members.html", ctx)
+    return render_to_response("groups/group_members.html", ctx)
 
 
 @require_POST
