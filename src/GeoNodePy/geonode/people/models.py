@@ -2,8 +2,11 @@ import datetime
 import itertools
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
+
+from taggit.managers import TaggableManager
 
 
 class PeopleGroup(models.Model):
@@ -12,6 +15,7 @@ class PeopleGroup(models.Model):
     slug = models.SlugField(unique=True)
     logo = models.FileField(upload_to="people_peoplegroup")
     description = models.TextField()
+    keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
     access = models.CharField(max_length=15, choices=[
         ("public", "Public"),
         ("public-invite", "Public (invite-only)"),
