@@ -1,5 +1,6 @@
 --extra-index-url=http://dist.pinaxproject.com/dev
 
+
 PIL
 OWSLib==0.4.0
 -r py-base-libs.txt
@@ -23,3 +24,5 @@ agon-ratings==0.2
 dialogos==0.1.dev4
 django-taggit==0.9.3
 django-relationships==0.3.0
+django-announcements==0.1.2
+django-notification==0.2

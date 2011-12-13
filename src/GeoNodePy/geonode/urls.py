@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     (r'^relationships/', include('relationships.urls')),
     (r'^ratings/', include('agon_ratings.urls')),
     (r'^comments/', include('dialogos.urls')),
+    (r'^announcements/', include('announcements.urls')),
     )
 
 urlpatterns += geonode.proxy.urls.urlpatterns

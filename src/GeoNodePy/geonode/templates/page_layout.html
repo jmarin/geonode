@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load announcement_tags %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -70,6 +71,18 @@
 
     </div><!-- /.wrap -->
   </div><!-- /#crossbar -->
+  {% fetch_announcements as announcements_list %}
+  {% if announcements_list %}
+  <div id="announcements">
+      <ul>
+      {% for announcement in announcements_list %}
+      <div class="announcement">
+          <li><span class="announceTitle">{{ announcement.title }}</span>: <span class="announceContent">{{ announcement.content }}</span> - <a href="{% url announcement_hide announcement.id %}?next={{ request.get_full_path }}" class="dismiss">Clear</a></dd>
+      </div>
+      {% endfor %}
+      </ul>
+  </div> <!-- /#announcements -->
+  {% endif %}
   <div id="main">
     <div class="wrap selfclear">       
       {% block main %}{% endblock %}

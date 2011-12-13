@@ -121,6 +121,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.request",
     "geonode.maps.context_processors.resource_urls",
+    "django.core.context_processors.request",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -259,10 +260,13 @@ INSTALLED_APPS = (
     'registration',
     'profiles',
     'avatar',
+
     'agon_ratings',
     'dialogos',
     'taggit',
     'relationships',
+    'announcements',
+    'notification',
 
     'geonode.core',
     'geonode.maps',
