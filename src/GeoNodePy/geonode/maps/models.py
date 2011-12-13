@@ -17,7 +17,7 @@ from urlparse import urlparse
 import uuid
 from datetime import datetime
 from django.contrib.auth.models import User, Permission
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from string import lower
 from StringIO import StringIO
@@ -500,6 +500,7 @@ class Contact(models.Model):
     zipcode = models.CharField(_('Postal Code'), max_length=255, blank=True, null=True)
     country = models.CharField(choices=COUNTRIES, max_length=3, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+
     keywords = TaggableManager(_('keywords'), help_text=_("A space or comma-separated list of keywords"), blank=True)
 
     def clean(self):
