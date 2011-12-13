@@ -27,3 +27,4 @@ django-relationships==0.3.0
 django-announcements==0.1.2
 django-notification==0.2
 South==0.7.3
+-e git+https://github.com/eldarion/user_messages#egg=user_messages
