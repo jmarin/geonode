@@ -1,0 +1,27 @@
+{% extends "page_layout.html" %}
+
+{% load i18n %}
+
+{% block main %}
+<h3>{{ thread.subject }}</h3>
+<hr />
+{% for message in thread.messages.all %}
+{{ message.sent_at }} by {% ifequal request.user message.sender %}{% trans "you" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}
+<p>{{ message.content }}</p>
+{% empty %}
+You have no messages.
+{% endfor %}
+<div>
+    <form action="{{ thread.get_absolute_url }}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <textarea name="content"></textarea>
+            <input type="submit" value="{% trans "Send message" %}" />
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<a href="{% url messages_inbox %}">{% trans "Back to Inbox" %}</a>
+{% endblock %}
