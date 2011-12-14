@@ -8,7 +8,9 @@
     <thead>
         <tr>
             <td>Message</td>
-            <td>Sender</td>
+            <td>With</td>
+            <td>Last Sender</td>
+            <td>Preview</td>
             <td>Delete?</td>
         </tr>
         </thead>
@@ -17,12 +19,22 @@
         <tr>
             <td><a href="{{ thread.get_absolute_url }}">{{ thread.subject }}</a></td>
             <td>
+                {% for user in thread.users.all %}
+                    {% ifnotequal request.user user %}
+                        <p>{% avatar user 50 %}</p>
+                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
+                    {% endifnotequal %}
+                {% endfor %}
+            </td>
+            <td>
                 {% ifequal request.user thread.latest_message.sender %}
                 you
                 {% else %}
-                <p>{% avatar thread.latest_message.sender 50 %}</p>
                 <a href="{{ thread.latest_message.sender.get_absolute_url }}">{{ thread.latest_message.sender }}</a>
                 {% endifequal %}
+            </td>
+            <td>
+                {{ thread.latest_message.content|slice:"50" }}<a href="{{ thread.get_absolute_url }}">...</a>
             </td>
             <td>
                 <form id="thread_delete_{{ thread.pk }}" method="post" action="{% url messages_thread_delete thread.pk %}">
