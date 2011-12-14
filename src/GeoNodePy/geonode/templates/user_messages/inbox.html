@@ -1,6 +1,7 @@
 {% extends "page_layout.html" %}
 
 {% load i18n %}
+{% load avatar_tags %}
 
 {% block main %}
 <table>
@@ -19,6 +20,7 @@
                 {% ifequal request.user thread.latest_message.sender %}
                 you
                 {% else %}
+                <p>{% avatar thread.latest_message.sender 50 %}</p>
                 <a href="{{ thread.latest_message.sender.get_absolute_url }}">{{ thread.latest_message.sender }}</a>
                 {% endifequal %}
             </td>

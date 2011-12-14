@@ -1,11 +1,13 @@
 {% extends "page_layout.html" %}
 
 {% load i18n %}
+{% load avatar_tags %}
 
 {% block main %}
 <h3>{{ thread.subject }}</h3>
 <hr />
 {% for message in thread.messages.all %}
+{% avatar message.sender 70 %}
 {{ message.sent_at }} by {% ifequal request.user message.sender %}{% trans "you" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}
 <p>{{ message.content }}</p>
 {% empty %}
