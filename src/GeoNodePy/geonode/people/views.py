@@ -3,8 +3,10 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.decorators.http import require_POST
 
+from django.contrib.auth.decorators import login_required
+
 from geonode.people.forms import PeopleGroupInviteForm
-from geonode.people.models import PeopleGroup
+from geonode.people.models import PeopleGroup, PeopleGroupInvitation
 
 
 def people_group_list(request):
@@ -62,6 +64,22 @@ def people_group_invite(request, slug):
     
     if form.is_valid():
         for user in form.cleaned_data["users"]:
-            group.invite(user, role=form.cleaned_data["role"])
+            group.invite(user, request.user, role=form.cleaned_data["role"])
     
     return redirect("people_group_members", slug=group.slug)
+
+
+@login_required
+def people_group_invite_response(request, token):
+    invite = get_object_or_404(PeopleGroupInvitation, token=token)
+    
+    if request.method == "POST":
+        if "accept" in request.POST:
+            invite.accept(request.user)
+        
+        if "decline" in request.POST:
+            invite.decline()
+        
+        return redirect("people_group_detail", slug=invite.group.slug)
+    else:
+        return render_to_response("groups/group_invite_response.html")

@@ -1,7 +1,10 @@
 import datetime
 import itertools
 
+from django.conf import settings
 from django.db import models
+from django.template.loader import render_to_string
+from django.utils.hashcompat import sha_constructor
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
@@ -47,16 +50,23 @@ class PeopleGroup(models.Model):
     def join(self, user, **kwargs):
         PeopleGroupMember(group=self, user=user, **kwargs).save()
     
-    def invite(self, user, role="member", send=True):
-        params = dict(role=role)
+    def invite(self, user, from_user, role="member", send=True):
+        params = dict(role=role, from_user=from_user)
         if isinstance(user, User):
             params["user"] = user
             params["email"] = user.email
         else:
             params["email"] = user
+        bits = [
+            settings.SECRET_KEY,
+            params["email"],
+            str(datetime.datetime.now()),
+            settings.SECRET_KEY
+        ]
+        params["token"] = sha_constructor("".join(bits)).hexdigest()
         invitation = self.invitations.create(**params)
         if send:
-            invitation.send()
+            invitation.send(from_user)
         return invitation
 
 
@@ -74,8 +84,10 @@ class PeopleGroupMember(models.Model):
 class PeopleGroupInvitation(models.Model):
     
     group = models.ForeignKey(PeopleGroup, related_name="invitations")
+    token = models.CharField(max_length=40)
     email = models.EmailField()
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(User, null=True, related_name="pg_invitations_received")
+    from_user = models.ForeignKey(User, related_name="pg_invitations_sent")
     role = models.CharField(max_length=10, choices=[
         ("manager", "Manager"),
         ("member", "Member"),
@@ -94,9 +106,15 @@ class PeopleGroupInvitation(models.Model):
     class Meta:
         unique_together = [("group", "email")]
     
-    def send(self):
-        # send to self.email
-        pass
+    def send(self, from_user):
+        ctx = {
+            "invite": self,
+            "group": self.group,
+            "from_user": from_user,
+        }
+        subject = render_to_string("groups/email/invite_user_subject.txt", ctx)
+        message = render_to_string("groups/email/invite_user.txt", ctx)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])
     
     def accept(self, user):
         self.group.join(user, role=self.role)
