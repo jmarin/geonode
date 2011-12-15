@@ -5,20 +5,20 @@ from django.views.decorators.http import require_POST
 
 from django.contrib.auth.decorators import login_required
 
-from geonode.people.forms import PeopleGroupInviteForm
-from geonode.people.models import PeopleGroup, PeopleGroupInvitation
+from geonode.groups.forms import GroupInviteForm
+from geonode.groups.models import Group, GroupInvitation
 
 
-def people_group_list(request):
+def group_list(request):
     ctx = {
-        "object_list": PeopleGroup.objects.all(),
+        "object_list": Group.objects.all(),
     }
     ctx = RequestContext(request, ctx)
     return render_to_response("groups/group_list.html", ctx)
 
 
-def people_group_detail(request, slug):
-    group = get_object_or_404(PeopleGroup, slug=slug)
+def group_detail(request, slug):
+    group = get_object_or_404(Group, slug=slug)
     
     if not group.can_view(request.user):
         raise Http404()
@@ -33,15 +33,15 @@ def people_group_detail(request, slug):
     return render_to_response("groups/group_detail.html", ctx)
 
 
-def people_group_members(request, slug):
-    group = get_object_or_404(PeopleGroup, slug=slug)
+def group_members(request, slug):
+    group = get_object_or_404(Group, slug=slug)
     ctx = {}
     
     if not group.can_view(request.user):
         raise Http404()
     
     if group.access in ["public-invite", "private"] and group.user_is_role(request.user, "manager"):
-        ctx["invite_form"] = PeopleGroupInviteForm()
+        ctx["invite_form"] = GroupInviteForm()
     
     ctx.update({
         "object": group,
@@ -54,24 +54,24 @@ def people_group_members(request, slug):
 
 
 @require_POST
-def people_group_invite(request, slug):
-    group = get_object_or_404(PeopleGroup, slug=slug)
+def group_invite(request, slug):
+    group = get_object_or_404(Group, slug=slug)
     
     if not group.can_invite(request.user):
         raise Http404()
     
-    form = PeopleGroupInviteForm(request.POST)
+    form = GroupInviteForm(request.POST)
     
     if form.is_valid():
         for user in form.cleaned_data["users"]:
             group.invite(user, request.user, role=form.cleaned_data["role"])
     
-    return redirect("people_group_members", slug=group.slug)
+    return redirect("group_members", slug=group.slug)
 
 
 @login_required
-def people_group_invite_response(request, token):
-    invite = get_object_or_404(PeopleGroupInvitation, token=token)
+def group_invite_response(request, token):
+    invite = get_object_or_404(GroupInvitation, token=token)
     
     if request.method == "POST":
         if "accept" in request.POST:
@@ -80,6 +80,6 @@ def people_group_invite_response(request, token):
         if "decline" in request.POST:
             invite.decline()
         
-        return redirect("people_group_detail", slug=invite.group.slug)
+        return redirect("group_detail", slug=invite.group.slug)
     else:
         return render_to_response("groups/group_invite_response.html")

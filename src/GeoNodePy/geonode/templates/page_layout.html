@@ -34,7 +34,7 @@
         <li class="home"><a href="{% url geonode.views.index %}">{% trans "Home" %}</a></li>
         <li class=""><a class="" id="dataLink" href="{% url geonode.maps.views.browse_data %}">{% trans "Data" %}</a></li>
         <li class=""><a class="" id="mapsLink" href="{% url geonode.maps.views.maps %}">{% trans "Maps" %}</a></li>
-        <li class=""><a class="" id="groupsLink" href="{% url people_group_list %}">{% trans "Groups" %}</a></li>
+        <li class=""><a class="" id="groupsLink" href="{% url group_list %}">{% trans "Groups" %}</a></li>
     {% if user.is_authenticated %}
         <li class=""><a class="" id="profileLink" href="{% url profiles_profile_detail user.username %}">{% trans "Profile" %}</a></li>
     {% if user.is_staff %}

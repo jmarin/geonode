@@ -4,7 +4,7 @@ from django.core.validators import email_re
 from django.contrib.auth.models import User
 
 
-class PeopleGroupInviteForm(forms.Form):
+class GroupInviteForm(forms.Form):
     
     role = forms.ChoiceField(choices=[
         ("manager", "Manager"),

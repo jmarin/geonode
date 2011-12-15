@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 
 
-class PeopleGroup(models.Model):
+class Group(models.Model):
     
     title = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
@@ -26,7 +26,7 @@ class PeopleGroup(models.Model):
     ])
     
     def member_queryset(self):
-        return self.peoplegroupmember_set.all()
+        return self.groupmember_set.all()
     
     def user_is_member(self, user):
         if not user.is_authenticated():
@@ -48,7 +48,7 @@ class PeopleGroup(models.Model):
         return self.user_is_role(user, "manager")
     
     def join(self, user, **kwargs):
-        PeopleGroupMember(group=self, user=user, **kwargs).save()
+        GroupMember(group=self, user=user, **kwargs).save()
     
     def invite(self, user, from_user, role="member", send=True):
         params = dict(role=role, from_user=from_user)
@@ -70,9 +70,9 @@ class PeopleGroup(models.Model):
         return invitation
 
 
-class PeopleGroupMember(models.Model):
+class GroupMember(models.Model):
     
-    group = models.ForeignKey(PeopleGroup)
+    group = models.ForeignKey(Group)
     user = models.ForeignKey(User)
     role = models.CharField(max_length=10, choices=[
         ("manager", "Manager"),
@@ -81,9 +81,9 @@ class PeopleGroupMember(models.Model):
     joined = models.DateTimeField(default=datetime.datetime.now)
 
 
-class PeopleGroupInvitation(models.Model):
+class GroupInvitation(models.Model):
     
-    group = models.ForeignKey(PeopleGroup, related_name="invitations")
+    group = models.ForeignKey(Group, related_name="invitations")
     token = models.CharField(max_length=40)
     email = models.EmailField()
     user = models.ForeignKey(User, null=True, related_name="pg_invitations_received")
