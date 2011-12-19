@@ -3,6 +3,8 @@ from django.core.validators import email_re
 
 from django.contrib.auth.models import User
 
+from geonode.maps.models import Map, Layer
+
 
 class GroupInviteForm(forms.Form):
     
@@ -36,3 +38,11 @@ class GroupInviteForm(forms.Form):
             raise forms.ValidationError(message)
         
         return invitees
+
+
+class AddGroupMapForm(forms.Form):
+    maps = forms.ModelMultipleChoiceField(queryset=Map.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+
+class AddGroupLayerForm(forms.Form):
+    layers = forms.ModelMultipleChoiceField(queryset=Layer.objects.all(), widget=forms.CheckboxSelectMultiple)
