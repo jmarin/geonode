@@ -5,8 +5,10 @@ from django.views.decorators.http import require_POST
 
 from django.contrib.auth.decorators import login_required
 
-from geonode.groups.forms import GroupInviteForm
+from geonode.groups.forms import GroupInviteForm, AddGroupMapForm, AddGroupLayerForm
 from geonode.groups.models import Group, GroupInvitation
+
+from geonode.maps.models import Layer, Map, GroupLayer, GroupMap
 
 
 def group_list(request):
@@ -83,3 +85,62 @@ def group_invite_response(request, token):
         return redirect("group_detail", slug=invite.group.slug)
     else:
         return render_to_response("groups/group_invite_response.html")
+
+
+@login_required
+def group_add_layers(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    
+    ctx = {}
+    if request.method == "POST":
+        form = AddGroupLayerForm(request.POST)
+        
+        if form.is_valid():
+            ctx["layers_added"] = []
+            for l in form.cleaned_data["layers"]:
+                GroupLayer.objects.get_or_create(layer=l, group=group)
+                ctx["layers_added"].append(l.title)
+    else:
+        layers = Layer.objects.filter(owner=request.user)
+        form = AddGroupLayerForm()
+        form.fields["layers"].queryset = layers
+        
+    ctx["form"] = form
+    ctx.update({
+        "object": group,
+        "members": group.member_queryset(),
+        "is_member": group.user_is_member(request.user),
+        "is_manager": group.user_is_role(request.user, "manager"),
+    })
+    ctx = RequestContext(request, ctx)
+    return render_to_response("groups/group_add_layers.html", ctx)
+
+
+@login_required
+def group_add_maps(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    
+    ctx = {}
+    if request.method == "POST":
+        form = AddGroupMapForm(request.POST)
+        
+        if form.is_valid():
+            ctx["maps_added"] = []
+            for m in form.cleaned_data["maps"]:
+                GroupMap.objects.get_or_create(map=m, group=group)
+                ctx["maps_added"].append(m.title)
+    else:
+        maps = Map.objects.filter(owner=request.user)
+        maps.exclude
+        form = AddGroupMapForm()
+        form.fields["maps"].queryset = maps
+        
+    ctx["form"] = form
+    ctx.update({
+        "object": group,
+        "members": group.member_queryset(),
+        "is_member": group.user_is_member(request.user),
+        "is_manager": group.user_is_role(request.user, "manager"),
+    })
+    ctx = RequestContext(request, ctx)
+    return render_to_response("groups/group_add_maps.html", ctx)
