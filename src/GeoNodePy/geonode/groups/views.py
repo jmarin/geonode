@@ -34,6 +34,7 @@ def group_detail(request, slug):
         "layers": layers,
         "members": group.member_queryset(),
         "is_member": group.user_is_member(request.user),
+        "is_manager": group.user_is_role(request.user, "manager"),
     }
     ctx = RequestContext(request, ctx)
     return render_to_response("groups/group_detail.html", ctx)
@@ -148,3 +149,47 @@ def group_add_maps(request, slug):
     })
     ctx = RequestContext(request, ctx)
     return render_to_response("groups/group_add_maps.html", ctx)
+
+
+@login_required
+def group_remove_maps_data(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if not group.user_is_role(request.user, "manager"):
+        raise Http404()
+    
+    ctx = {}
+    
+    if request.method == "POST":
+        map_form = GroupMapForm(request.POST)
+        layer_form = GroupLayerForm(request.POST)
+        
+        if map_form.is_valid() and layer_form.is_valid():
+            for m in map_form.cleaned_data["maps"]:
+                GroupMap.objects.get(map=m).delete()
+            map_form.cleaned_data["maps"] = []
+            for l in layer_form.cleaned_data["layers"]:
+                GroupLayer.objects.get(layer=l).delete()
+            layer_form.cleaned_data["layers"] = []
+            
+    # Even if we're removing data, recreate the forms so that they are missing the removed elements.
+    map_ids = GroupMap.objects.filter(group=group).values_list("map", flat=True)
+    layer_ids = GroupLayer.objects.filter(group=group).values_list("layer", flat=True)
+    
+    map_form = GroupMapForm()
+    map_form.fields["maps"].queryset = Map.objects.filter(id__in=map_ids)
+    
+    layer_form = GroupLayerForm()
+    layer_form.fields["layers"].queryset = Map.objects.filter(id__in=layer_ids)
+    
+    ctx["map_form"] = map_form
+    ctx["layer_form"] = layer_form
+    
+    ctx.update({
+        "object": group,
+        "members": group.member_queryset(),
+        "is_member": group.user_is_member(request.user),
+        "is_manager": group.user_is_role(request.user, "manager"),
+    })
+    
+    ctx = RequestContext(request, ctx)
+    return render_to_response("groups/group_remove_maps_data.html", ctx)

@@ -38,6 +38,9 @@
         <ul>
           <li><a href="{% url group_add_maps object.slug %}">Add map</a></li>
           <li><a href="{% url group_add_layers object.slug %}">Add data</a></li>
+            {% if is_manager %}
+            <li><a href="{% url group_remove_maps_data object.slug %}">Remove maps/data</a></li>
+            {% endif %}
         </ul>
         </p>
         {% endif %}
