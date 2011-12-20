@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 
 from django.contrib.auth.decorators import login_required
 
-from geonode.groups.forms import GroupInviteForm, AddGroupMapForm, AddGroupLayerForm
+from geonode.groups.forms import GroupInviteForm, GroupMapForm, GroupLayerForm
 from geonode.groups.models import Group, GroupInvitation
 
 from geonode.maps.models import Layer, Map, GroupLayer, GroupMap
@@ -97,7 +97,7 @@ def group_add_layers(request, slug):
     
     ctx = {}
     if request.method == "POST":
-        form = AddGroupLayerForm(request.POST)
+        form = GroupLayerForm(request.POST)
         
         if form.is_valid():
             ctx["layers_added"] = []
@@ -106,7 +106,7 @@ def group_add_layers(request, slug):
                 ctx["layers_added"].append(l.title)
     else:
         layers = Layer.objects.filter(owner=request.user)
-        form = AddGroupLayerForm()
+        form = GroupLayerForm()
         form.fields["layers"].queryset = layers
         
     ctx["form"] = form
@@ -126,7 +126,7 @@ def group_add_maps(request, slug):
     
     ctx = {}
     if request.method == "POST":
-        form = AddGroupMapForm(request.POST)
+        form = GroupMapForm(request.POST)
         
         if form.is_valid():
             ctx["maps_added"] = []
@@ -136,7 +136,7 @@ def group_add_maps(request, slug):
     else:
         maps = Map.objects.filter(owner=request.user)
         maps.exclude
-        form = AddGroupMapForm()
+        form = GroupMapForm()
         form.fields["maps"].queryset = maps
         
     ctx["form"] = form

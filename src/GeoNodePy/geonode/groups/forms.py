@@ -40,9 +40,9 @@ class GroupInviteForm(forms.Form):
         return invitees
 
 
-class AddGroupMapForm(forms.Form):
+class GroupMapForm(forms.Form):
     maps = forms.ModelMultipleChoiceField(queryset=Map.objects.all(), widget=forms.CheckboxSelectMultiple)
 
 
-class AddGroupLayerForm(forms.Form):
+class GroupLayerForm(forms.Form):
     layers = forms.ModelMultipleChoiceField(queryset=Layer.objects.all(), widget=forms.CheckboxSelectMultiple)
