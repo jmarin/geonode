@@ -24,10 +24,14 @@ def group_detail(request, slug):
     
     if not group.can_view(request.user):
         raise Http404()
+        
+    maps = GroupMap.maps_for_group(group)
+    layers = GroupLayer.layers_for_group(group)
     
     ctx = {
         "object": group,
-        "maps": [], # @@@
+        "maps": maps,
+        "layers": layers,
         "members": group.member_queryset(),
         "is_member": group.user_is_member(request.user),
     }

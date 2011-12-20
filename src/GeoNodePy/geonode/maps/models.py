@@ -1661,7 +1661,12 @@ class GroupLayer(models.Model):
     
     group = models.ForeignKey(Group)
     layer = models.ForeignKey(Layer)
-    
+
+    @classmethod
+    def layers_for_group(cls, group_id):
+        layer_ids = cls.objects.filter(group=group_id).values_list('layer', flat=True)
+        return Layer.objects.filter(id__in=layer_ids)
+
     class Meta:
         unique_together = (("group", "layer"),)
 
@@ -1670,6 +1675,11 @@ class GroupMap(models.Model):
     
     group = models.ForeignKey(Group)
     map = models.ForeignKey(Map)
+
+    @classmethod
+    def maps_for_group(cls, group_id):
+        map_ids = cls.objects.filter(group=group_id).values_list('map', flat=True)
+        return Map.objects.filter(id__in=map_ids)
 
     class Meta:
         unique_together = (("group", "map"),)
