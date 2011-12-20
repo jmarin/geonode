@@ -5,6 +5,7 @@ from django.views.decorators.http import require_POST
 
 from django.contrib.auth.decorators import login_required
 
+
 from geonode.groups.forms import GroupInviteForm, GroupMapForm, GroupLayerForm
 from geonode.groups.models import Group, GroupInvitation
 
@@ -108,6 +109,7 @@ def group_add_layers(request, slug):
     else:
         layers = Layer.objects.filter(owner=request.user)
         form = GroupLayerForm()
+
         form.fields["layers"].queryset = layers
         
     ctx["form"] = form

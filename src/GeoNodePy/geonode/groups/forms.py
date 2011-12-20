@@ -46,3 +46,4 @@ class GroupMapForm(forms.Form):
 
 class GroupLayerForm(forms.Form):
     layers = forms.ModelMultipleChoiceField(queryset=Layer.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
