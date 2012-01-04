@@ -230,6 +230,7 @@ def setup_webapps(options):
     'setup_webapps',
     'generate_geoserver_token',
     'sync_django_db',
+    'migrate_django_db',
     'package_client'
 ])
 def build(options):
@@ -257,6 +258,32 @@ def setup_geonode_client(options):
 @task
 def sync_django_db(options):
     sh("django-admin.py syncdb --settings=geonode.settings --noinput")
+
+@task
+@needs([
+    'sync_django_db'
+])
+@cmdopts([
+    ("fake", "f", "Flag that specificies whether to fake database migrations or not. Should be used if you have an existing, non-South-based install.")
+])
+def migrate_django_db(options):
+    # Apps that need to be migrated.
+    # The order in this list does matter; dependencies have to be placed first.
+    MIGRATED_APPS = [
+        "maps",
+        "core",
+    ]
+    
+    for app_name in MIGRATED_APPS:
+        # Do fake migrations, since we have an existing copy of the database that needs to be ported.
+        if hasattr(options, "fake"):
+            # This migration represents te state of the maps module before South was added to GeoNode.
+            sh("django-admin.py migrate %s 0001_initial --fake --settings=geonode.settings" % app_name)
+            
+        sh("django-admin.py migrate %s --settings=geonode.settings" % app_name)
+        
+        # Load the default fixtures
+        sh("django-admin.py loaddata %s --settings=geonode.settings" % app_name)
 
 @task
 def generate_geoserver_token(options):

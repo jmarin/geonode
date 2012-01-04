@@ -267,6 +267,7 @@ INSTALLED_APPS = (
     'relationships',
     'announcements',
     'notification',
+    'south',
 
     'geonode.core',
     'geonode.maps',
