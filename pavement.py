@@ -68,7 +68,6 @@ gs_data = "gs-data"
 geoserver_target = path('src/geoserver-geonode-ext/target/geoserver.war')
 geonetwork_target = path('webapps/geonetwork.war')
 def geonode_client_target(): return options.deploy.out_dir / "geonode-client.zip"
-geonode_client_target_war = path('webapps/geonode-client.war')
 
 deploy_req_txt = """
 # NOTE... this file is generated
@@ -240,19 +239,18 @@ def build(options):
 @task
 def setup_geonode_client(options):
     """
-    Fetch geonode-client
+    Build geonode-client
     """
+    with pushd('src/geonode-client'):
+        sh("mvn clean install")
+    
     static = path("./src/GeoNodePy/geonode/media/static")
     if not static.exists():
         static.mkdir()
 
-    src_url = str(options.config.parser.get('geonode-client', 'geonode_client_zip_url'))
-    dst_zip = static / "geonode-client.zip"
+    src_zip = path("./src/geonode-client/build/geonode-client.zip")
 
-    grab(src_url, dst_zip)
-
-    zip_extractall(zipfile.ZipFile(dst_zip), static)
-    dst_zip.remove()
+    zip_extractall(zipfile.ZipFile(src_zip), static)
 
 @task
 def sync_django_db(options):
@@ -283,25 +281,15 @@ def package_dir(options):
 
 @task
 @needs('package_dir', 'setup_geonode_client')
-@cmdopts([
-    ('use_war', 'w', 'Use a war to deploy geonode-client')
-])
 def package_client(options):
     """Package compressed client resources (JavaScript, CSS, images)."""
 
-    if(hasattr(options, 'use_war')): 
-    	geonode_client_target_war.copy(options.deploy.out_dir)
-    else:
-        # Extract static files to static_location 
-        src_url = str(options.config.parser.get('geonode-client', 'geonode_client_zip_url'))
-    	geonode_media_dir = path("./src/GeoNodePy/geonode/media")
-        dst_zip =  geonode_media_dir / "geonode-client.zip"
-        static_location = geonode_media_dir / "static" 
+    # Extract static files to static_location 
+    src_zip = path("./src/geonode-client/build/geonode-client.zip")
+    geonode_media_dir = path("./src/GeoNodePy/geonode/media")
+    static_location = geonode_media_dir / "static" 
 
-        grab(src_url, dst_zip)
-
-        zip_extractall(zipfile.ZipFile(dst_zip), static_location)
-        os.remove(dst_zip)
+    zip_extractall(zipfile.ZipFile(src_zip), static_location)
 
 @task
 @needs('package_dir', 'setup_geoserver')

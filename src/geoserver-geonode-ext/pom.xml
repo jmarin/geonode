@@ -23,6 +23,14 @@
       <id>osgeo</id>
       <url>http://download.osgeo.org/webdav/geotools</url>
     </repository>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Restlet Maven Repository</name>
+      <url>http://maven.restlet.org</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -68,6 +76,18 @@
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.opengeo.geoserver</groupId>
+        <artifactId>importer</artifactId>
+        <version>2.4.3</version>
+        <scope>runtime</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.geoserver.community</groupId>
+                <artifactId>ftp</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     
 
@@ -153,8 +173,8 @@
     </dependency>
   </dependencies>
   <properties>
-    <geotools.version>2.7-SNAPSHOT</geotools.version>
-    <geoserver.version>2.1-SNAPSHOT</geoserver.version>
+    <geotools.version>8-SNAPSHOT</geotools.version>
+    <geoserver.version>2.2-SNAPSHOT</geoserver.version>
     <jetty.version>6.1.8</jetty.version>
     <maven.test.search.classdir>true</maven.test.search.classdir>
   </properties>

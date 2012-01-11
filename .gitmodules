@@ -1,0 +1,3 @@
+[submodule "src/geonode-client"]
+	path = src/geonode-client
+	url = git://github.com/opengeo/geonode-client.git
