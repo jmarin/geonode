@@ -145,10 +145,7 @@ def group_add_layers(request, slug):
                 GroupLayer.objects.get_or_create(layer=l, group=group)
                 ctx["layers_added"].append(l.title)
     else:
-        layers = Layer.objects.filter(owner=request.user)
         form = GroupLayerForm()
-
-        form.fields["layers"].queryset = layers
         
     ctx["form"] = form
     ctx.update({
@@ -175,10 +172,7 @@ def group_add_maps(request, slug):
                 GroupMap.objects.get_or_create(map=m, group=group)
                 ctx["maps_added"].append(m.title)
     else:
-        maps = Map.objects.filter(owner=request.user)
-        maps.exclude
         form = GroupMapForm()
-        form.fields["maps"].queryset = maps
         
     ctx["form"] = form
     ctx.update({
