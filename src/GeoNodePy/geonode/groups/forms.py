@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from geonode.groups.models import Group
+from geonode.maps.models import Map, Layer
 
 
 class GroupForm(forms.ModelForm):
@@ -73,3 +74,12 @@ class GroupInviteForm(forms.Form):
             raise forms.ValidationError(message)
         
         return invitees
+
+
+class GroupMapForm(forms.Form):
+    maps = forms.ModelMultipleChoiceField(queryset=Map.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
+
+class GroupLayerForm(forms.Form):
+    layers = forms.ModelMultipleChoiceField(queryset=Layer.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
