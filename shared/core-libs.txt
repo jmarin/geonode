@@ -1,5 +1,5 @@
 --extra-index-url=http://dist.pinaxproject.com/dev
-
+--extra-index-url=http://dist.pinaxproject.com/alpha/
 
 PIL
 OWSLib==0.4.0
@@ -7,7 +7,8 @@ OWSLib==0.4.0
 -e git+https://github.com/dwins/gsconfig.py.git#egg=gsconfig.py
 #django-registration
 https://bitbucket.org/ubernostrum/django-registration/get/d36a38202ee3.zip
-django-profiles
+idios==0.2.a1
+django-cbv==0.2
 Paste
 PasteDeploy
 PasteScript
