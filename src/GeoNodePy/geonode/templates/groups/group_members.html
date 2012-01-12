@@ -1,5 +1,6 @@
 {% extends "groups/group_base.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block sidebar %}
 <div class="twocol">
@@ -14,9 +15,9 @@
 
     {% if invite_form %}
         <h2>{% trans "Add members" %}</h2>
-        <form method="POST" action="{% url group_invite object.slug %}">
+        <form class="uniForm" method="POST" action="{% url group_invite object.slug %}">
             {% csrf_token %}
-            {{ invite_form }}
+            {{ invite_form|crispy }}
             <input type="submit" value="invite" />
         </form>
     {% endif %}
