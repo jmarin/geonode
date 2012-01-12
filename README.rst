@@ -112,31 +112,6 @@ This command::
 can be used to create additional administrative user accounts.  The administrative control panel is not
 linked from the main site, but can be accessed at http://localhost:8000/admin/
 
-Migrations
-==========
-
-Django database migrations are managed with South.
-
-If you have a previous install of GeoNode, you will need to tell South that the
-initial migrations will have to be "faked"::
-
-  paver migrate_django_db -f
-
-If you're not upgrading an existing install, or after you have already done so,
-you can leave off the -f switch::
-
-  paver migrate_django_db
-
-This command will run syncdb (via the Paver ``sync_django_db`` task) prior to performing migrations.
-
-Any apps that are managed by South in this project use ``<app_name>.json``
-(like ``maps.json`` for ``geonode.maps``) as their initial data fixture, so as to avoid
-syncdb throwing errors when it tries to load an ``initial_data.json`` file for an app
-that's not been fully synced/migrated yet.
-
-If you are adding a new South app, be sure to add it's name to the ``MIGRATED_APPS``
-list in the ``migrate_django_db`` Paver task.
-
 Options
 =======
 
