@@ -272,6 +272,7 @@ def migrate_django_db(options):
     MIGRATED_APPS = [
         "maps",
         "core",
+        "relationships",
     ]
     
     for app_name in MIGRATED_APPS:
