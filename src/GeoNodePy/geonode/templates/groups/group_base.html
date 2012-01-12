@@ -36,6 +36,9 @@
         <p>
         <h3>Actions</h3>
         <ul>
+          {% if is_manager %}
+            <li><a href="{% url group_update object.slug %}">Edit Group Details</a></li>
+          {% endif %}
           <li><a href="{% url group_add_maps object.slug %}">Add map</a></li>
           <li><a href="{% url group_add_layers object.slug %}">Add data</a></li>
             {% if is_manager %}
