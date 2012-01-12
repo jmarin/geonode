@@ -288,7 +288,7 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': get_user_url
 }
 
-AUTH_PROFILE_MODULE = 'maps.Contact'
+AUTH_PROFILE_MODULE = 'people.Contact'
 REGISTRATION_OPEN = False
 
 SERVE_MEDIA = DEBUG;
