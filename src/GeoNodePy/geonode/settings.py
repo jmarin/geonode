@@ -269,11 +269,13 @@ INSTALLED_APPS = (
     'announcements',
     'notification',
     'user_messages',
+    'crispy_forms',
 
     'geonode.core',
     'geonode.maps',
     'geonode.people',
     'geonode.proxy',
+    'geonode.groups',
     'geonode'
 )
 
