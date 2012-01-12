@@ -109,7 +109,7 @@ def group_invite(request, slug):
     form = GroupInviteForm(request.POST)
     
     if form.is_valid():
-        for user in form.cleaned_data["users"]:
+        for user in form.cleaned_data["user_identifiers"]:
             group.invite(user, request.user, role=form.cleaned_data["role"])
     
     return redirect("group_members", slug=group.slug)
@@ -118,7 +118,7 @@ def group_invite(request, slug):
 @login_required
 def group_invite_response(request, token):
     invite = get_object_or_404(GroupInvitation, token=token)
-    
+    ctx = {"invite": invite}
     if request.method == "POST":
         if "accept" in request.POST:
             invite.accept(request.user)
@@ -128,7 +128,8 @@ def group_invite_response(request, token):
         
         return redirect("group_detail", slug=invite.group.slug)
     else:
-        return render_to_response("groups/group_invite_response.html")
+        ctx = RequestContext(request, ctx)
+        return render_to_response("groups/group_invite_response.html", ctx)
 
 
 @login_required

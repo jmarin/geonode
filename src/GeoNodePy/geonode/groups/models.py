@@ -2,12 +2,14 @@ import datetime
 import itertools
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.hashcompat import sha_constructor
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 from taggit.managers import TaggableManager
 
@@ -107,10 +109,13 @@ class GroupInvitation(models.Model):
         unique_together = [("group", "email")]
     
     def send(self, from_user):
+        current_site = Site.objects.get_current()
+        domain = unicode(current_site.domain)
         ctx = {
             "invite": self,
             "group": self.group,
             "from_user": from_user,
+            "domain": domain,
         }
         subject = render_to_string("groups/email/invite_user_subject.txt", ctx)
         message = render_to_string("groups/email/invite_user.txt", ctx)

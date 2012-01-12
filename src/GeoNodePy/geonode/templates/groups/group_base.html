@@ -69,6 +69,9 @@
               <a href="{{ member.profile.get_absolute_url }}">{% avatar member 35 %}</a>
           {% endfor %}
         </div>
+        {% if is_manager %}
+          <p><a href="{% url group_members object.slug %}">Full member list and invitations</a></p>
+        {% endif %}
 
     </div>
 {% endblock %}
