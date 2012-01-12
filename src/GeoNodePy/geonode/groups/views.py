@@ -1,11 +1,11 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.decorators.http import require_POST
 
 from django.contrib.auth.decorators import login_required
 
-from geonode.groups.forms import GroupInviteForm
+from geonode.groups.forms import GroupInviteForm, GroupForm, GroupUpdateForm
 from geonode.groups.models import Group, GroupInvitation
 
 
@@ -15,6 +15,43 @@ def group_list(request):
     }
     ctx = RequestContext(request, ctx)
     return render_to_response("groups/group_list.html", ctx)
+
+
+@login_required
+def group_create(request):
+    if request.method == "POST":
+        form = GroupForm(request.POST, request.FILES)
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.save()
+            group.join(request.user, role="manager")
+            return redirect("group_detail", group.slug)
+    else:
+        form = GroupForm()
+    
+    return render_to_response("groups/group_create.html", {
+        "form": form,
+    }, context_instance=RequestContext(request))
+
+
+@login_required
+def group_update(request, slug):
+    group = Group.objects.get(slug=slug)
+    if not group.user_is_role(request.user, role="manager"):
+        return HttpResponseForbidden()
+    
+    if request.method == "POST":
+        form = GroupUpdateForm(request.POST, request.FILES, instance=group)
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.save()
+            return redirect("group_detail", group.slug)
+    else:
+        form = GroupForm(instance=group)
+    
+    return render_to_response("groups/group_update.html", {
+        "form": form,
+    }, context_instance=RequestContext(request))
 
 
 def group_detail(request, slug):

@@ -1,7 +1,44 @@
 from django import forms
 from django.core.validators import email_re
+from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
+
+from geonode.groups.models import Group
+
+
+class GroupForm(forms.ModelForm):
+    
+    slug = forms.SlugField(max_length=20,
+            help_text=_("a short version of the name consisting only of letters, numbers, underscores and hyphens."),
+        )
+            
+    def clean_slug(self):
+        if Group.objects.filter(slug__iexact=self.cleaned_data["slug"]).count() > 0:
+            raise forms.ValidationError(_("A group already exists with that slug."))
+        return self.cleaned_data["slug"].lower()
+    
+    def clean_title(self):
+        if Group.objects.filter(title__iexact=self.cleaned_data["title"]).count() > 0:
+            raise forms.ValidationError(_("A group already exists with that title."))
+        return self.cleaned_data["title"]
+    
+    class Meta:
+        model = Group
+
+
+class GroupUpdateForm(forms.ModelForm):
+    
+    def clean_title(self):
+        if Group.objects.filter(title__iexact=self.cleaned_data["title"]).count() > 0:
+            if self.cleaned_data["title"] == self.instance.title:
+                pass  # same instance
+            else:
+                raise forms.ValidationError(_("A group already exists with that title."))
+        return self.cleaned_data["title"]
+    
+    class Meta:
+        model = Group
 
 
 class GroupInviteForm(forms.Form):
