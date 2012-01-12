@@ -54,10 +54,6 @@ class Contact(ProfileBase):
         if not (valid_name or valid_organization):
             raise ValidationError('Either name or organization should be provided')
 
-    def get_absolute_url(self):
-        return ('profile_detail', (), { 'username': self.user.username })
-    get_absolute_url = models.permalink(get_absolute_url)
-
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.organization)
 
