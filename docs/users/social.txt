@@ -1,0 +1,59 @@
+==========================
+Social Features in GeoNode
+==========================
+
+GeoNode provides several features that enhance the core capabilities for collaborating in the creation and sharing of geographic information. New features like Groups and Announcements enhance workflows among users, while Tagging and Ratings allow another aspect of data classification that can help find the most relevant content. Last but not least, integration with social media makes sharing maps and telling the world about them a breeze. 
+
+
+Announcements
+=============
+
+<Comments>
+==========
+
+Ratings
+=======
+
+.. figure:: images/social_ratings.png
+   :align:  left
+
+Ratings allow users to rate a particular map. Once a map is rated, the average rating appears at the top of the page, close to the :ref:`social_buttons` 
+
+
+
+<Tagging>
+=========
+
+User to User Messaging
+======================
+This feature allows users registered in the system to send messages to each other. A user needs to be logged in to be able to send a message. To use this functionality:
+
+	1. Go to the **Messages** section in the main menu for GeoNode, on the page that appears click *Create Message*
+	2. Enter a subject for your message
+	3. Choose the recipient (user) that your message is going to be sent to
+	4. Enter your message in the **Content** text area
+	5. Click on the **Send Message** button. Your message will be sent, and the recipient will be able to read it when they log in to their account.
+
+
+	Each user has an inbox where their messages show up, and have the option to reply inline to messages sent by other users. The Messages section will display the latest messages, their title, a preview of the message, and the last sender. The inbox also has the capability of deleting messages.
+
+<Groups>
+========
+
+Social network integration 
+==========================
+.. _social_buttons:
+.. figure:: images/social_buttons.png
+   :align: left
+
+
+The social network integration feature for GeoNode allows for users to tell their contacts about maps that have been created by themselves or by others.
+
+There are two options to share content with others:
+
+* **Google** +1 button. Google+ allows users to recommend content on Google Search and share it with others on Google+. By clicking on this link users can recommend maps in GeoNode to their contacts or make them accessible to a Google Search. 
+
+* **Facebook** *Like* button. The Facebook *Like* button allows users to share content on a web page with their friends on Facebook. When the user clicks the *Like* button on the GeoNode site, a new post will appear on their News Feed with a link to the GeoNode map
+
+In both cases, the user needs to be logged in into the social network of choice in order to be able to directly publish content. If that is not the case, a standard log in prompt from the appropriate third party provider will be shown. 
+
