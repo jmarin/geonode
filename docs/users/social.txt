@@ -2,7 +2,7 @@
 Social Features in GeoNode
 ==========================
 
-GeoNode provides several features that enhance the core capabilities for collaborating in the creation and sharing of geographic information. New features like Groups and Announcements enhance workflows among users, while Tagging and Ratings allow another aspect of data classification that can help find the most relevant content. Last but not least, integration with social media makes sharing maps and telling the world about them a breeze. 
+GeoNode provides several features that enhance the core capabilities for collaborating in the creation and sharing of geographic information. New features like Groups and Announcements enhance workflows among users, while Tagging and Ratings allow another aspect of data classification that can help find the most relevant content. Last but not least, integration with social media allows users to share geographic content with their contacts.  
 
 
 Announcements
@@ -17,7 +17,7 @@ Ratings
 .. figure:: images/social_ratings.png
    :align:  left
 
-Ratings allow users to rate a particular map. Once a map is rated, the average rating appears at the top of the page, close to the :ref:`social_buttons` 
+Ratings allow users to rate a particular map. Once a map is rated, the average rating appears at the top of the page. 
 
 
 
@@ -37,14 +37,33 @@ This feature allows users registered in the system to send messages to each othe
 
 	Each user has an inbox where their messages show up, and have the option to reply inline to messages sent by other users. The Messages section will display the latest messages, their title, a preview of the message, and the last sender. The inbox also has the capability of deleting messages.
 
-<Groups>
-========
+Groups
+======
 
+The Groups feature allows users to create groups of users . Users must be logged in to use this feature. In order to create a group, click on the Create New Group link on the Groups section, and fill out the following form:
+
+.. _create_new_form:
+.. figure:: images/group_create.png
+   :align:  center
+
+   *Create new Group Form* ((*) Required field)
+
+* **Title(*)**: The title of this group, name for which it is known
+* **Slug(*)**:  A short version of the name consisting only of letters, numbers, underscores and hypens
+* **Logo(*)**:  Image with a logo for the group
+* **Description**: Abstract with a short description for the Group
+* **Access(*)**: Level of access for other users to this Group. Access can be Public, Public with invitation, or completely Private. 
+* Keywords: A space or comma-separated list of keywords, useful when searching for data. 
+
+   
+Once a group is created the user can see its data and maps, as well as perform some actions like edit the group details and add or remove maps and data. The members and permission level as well as potential invitations and full list of members are also displayed. 
+
+ 
 Social network integration 
 ==========================
 .. _social_buttons:
 .. figure:: images/social_buttons.png
-   :align: left
+   :align: center
 
 
 The social network integration feature for GeoNode allows for users to tell their contacts about maps that have been created by themselves or by others.
