@@ -40,7 +40,7 @@ This feature allows users registered in the system to send messages to each othe
 Groups
 ======
 
-The Groups feature allows users to create groups of users . Users must be logged in to use this feature. In order to create a group, click on the Create New Group link on the Groups section, and fill out the following form:
+This feature allows users to create groups of users . Users must be logged in to create new groups, but anonymous users can see publicly available Groups. In order to create a group, click on the Create New Group link on the Groups section, and fill out the following form:
 
 .. _create_new_form:
 .. figure:: images/group_create.png
