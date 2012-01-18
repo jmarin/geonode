@@ -22,7 +22,7 @@
                 {% for user in thread.users.all %}
                     {% ifnotequal request.user user %}
                         <p>{% avatar user 50 %}</p>
-                        <a href="{{ user.get_absolute_url }}">{{ user }}</a>
+                        <a href="{% url profile_detail user %}">{{ user }}</a>
                     {% endifnotequal %}
                 {% endfor %}
             </td>
@@ -30,7 +30,7 @@
                 {% ifequal request.user thread.latest_message.sender %}
                 you
                 {% else %}
-                <a href="{{ thread.latest_message.sender.get_absolute_url }}">{{ thread.latest_message.sender }}</a>
+                <a href="{% url profile_detail thread.latest_message.sender %}">{{ thread.latest_message.sender }}</a>
                 {% endifequal %}
             </td>
             <td>
