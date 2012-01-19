@@ -2,22 +2,24 @@
 Social Features in GeoNode
 ==========================
 
-GeoNode provides several features that enhance the core capabilities for collaborating in the creation and sharing of geographic information. New features like Groups and Announcements enhance workflows among users, while Tagging and Ratings allow another aspect of data classification that can help find the most relevant content. Last but not least, integration with social media allows users to share geographic content with their contacts.  
+GeoNode provides several features that enhance the core capabilities for collaborating in the creation and sharing of geographic information. New features like Groups and Announcements enhance workflows among users, while Tagging and Ratings allow another aspect of data classification that can help find the most relevant content. Integration with social media allows users to share geographic content with their contacts.  
 
 
 Announcements
 =============
 
-<Comments>
-==========
 
-Ratings
+Ratings and Comments
 =======
 
-.. figure:: images/social_ratings.png
-   :align:  left
+Ratings allow users to rate a particular map. Once a map is rated, the average rating appears at the top of the page. Users can rate maps that they have access to by clicking on the desired number of stars (1 to 5) that they want to give a certain map. This functionality is now right below the map, in the section called Rate this map. 
 
-Ratings allow users to rate a particular map. Once a map is rated, the average rating appears at the top of the page. 
+In addition to rating, users have the capability of adding comments to a map, right below the rating. Posted comments will be visible to all users that can access that map, and can only be deleted by administrators.
+
+.. _ratings_and_comments_image:
+.. figure:: images/ratings_and_comments.png
+   :align:  center
+
 
 
 
@@ -35,7 +37,7 @@ This feature allows users registered in the system to send messages to each othe
 	5. Click on the **Send Message** button. Your message will be sent, and the recipient will be able to read it when they log in to their account.
 
 
-	Each user has an inbox where their messages show up, and have the option to reply inline to messages sent by other users. The Messages section will display the latest messages, their title, a preview of the message, and the last sender. The inbox also has the capability of deleting messages.
+	Each user has an inbox where their messages show up, and have the option to reply inline to messages sent by other users. The Messages section will display the latest messages, their title, a preview of the message, and who the conversation is with as well as who the last sender was. Users also have the capability of deleting messages.
 
 Groups
 ======
@@ -66,7 +68,7 @@ Social network integration
    :align: center
 
 
-The social network integration feature for GeoNode allows for users to tell their contacts about maps that have been created by themselves or by others.
+The social network integration feature for GeoNode allows users to tell their contacts about maps that have been created by themselves or by others.
 
 There are two options to share content with others:
 
